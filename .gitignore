@@ -1,0 +1,49 @@
+# IntelliJ-specific files
+.idea/
+
+# Compiled files
+target/
+project/target/
+
+# Logs and other generated files
+logs/
+*.log
+*.log.*
+*.tmp
+
+# SBT-specific files
+project/project
+project/target
+target
+
+# Eclipse-specific files
+.classpath
+.project
+.settings/
+
+# macOS-specific files
+.DS_Store# IntelliJ-specific files
+         .idea/
+
+         # Compiled files
+         target/
+         project/target/
+
+         # Logs and other generated files
+         logs/
+         *.log
+         *.log.*
+         *.tmp
+
+         # SBT-specific files
+         project/project
+         project/target
+         target
+
+         # Eclipse-specific files
+         .classpath
+         .project
+         .settings/
+
+         # macOS-specific files
+         .DS_Store
