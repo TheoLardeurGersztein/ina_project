@@ -78,17 +78,19 @@ object ThematiqueByYear {
     // Extract the year from the adjusted "MOIS" column
     val dfWithYear = df.withColumn("Year", substring(col("MOIS"), -2, 2))
 
-    // Group by "THEMATIQUES" and "Year", and sum the values for each column
-    val totalDF = dfWithYear
+
+
+    val avgDF = dfWithYear
+      .filter("Year <= 19")
       .groupBy("THEMATIQUES", "Year")
       .agg(
-        sum("TF1").as("Sum_TF1"),
-        sum("France_2").as("Sum_France_2"),
-        sum("France_3").as("Sum_France_3"),
-        sum("Canal+").as("Sum_Canal"),
-        sum("Arte").as("Sum_Arte"),
-        sum("M6").as("Sum_M6"),
-        sum("Totaux").as("Sum_Totaux")
+        avg("TF1").as("Average_TF1"),
+        avg("France_2").as("Average_France_2"),
+        avg("France_3").as("Average_France_3"),
+        avg("Canal+").as("Average_Canal"),
+        avg("Arte").as("Average_Arte"),
+        avg("M6").as("Average_M6"),
+        avg("Totaux").as("Average_Totaux")
       )
       .orderBy("Year", "THEMATIQUES")
 
@@ -96,7 +98,9 @@ object ThematiqueByYear {
     //totalDF.show()
 
 
-    val thematiques = totalDF.select("THEMATIQUES").distinct().as[String](Encoders.STRING).collect()
+
+
+    val thematiques = avgDF.select("THEMATIQUES").distinct().as[String](Encoders.STRING).collect()
 
     for (thematique <- thematiques) {
 
@@ -104,14 +108,14 @@ object ThematiqueByYear {
       val channel = "TF1"
 
       // Filter the DataFrame for the selected channel and thematique
-      val filteredDF = totalDF.filter(s"THEMATIQUES = '$thematique' AND Sum_$channel > 0")
+      val filteredDF = avgDF.filter(s"THEMATIQUES = '$thematique' AND Average_$channel > 0")
 
       // Collect the data to the driver program
       val collectedData = filteredDF.collect()
 
       // Extract years and corresponding values
       val years = DenseVector(collectedData.map(_.getAs[String]("Year")).map(_.toInt))
-      val values = DenseVector(collectedData.map(_.getAs[Long](s"Sum_$channel").toDouble).toArray)
+      val values = DenseVector(collectedData.map(_.getAs[Double](s"Average_$channel").toDouble).toArray)
       val intValues = DenseVector(values.map(_.toInt).toArray)
 
 
@@ -121,7 +125,7 @@ object ThematiqueByYear {
 
       p += plot(years, intValues, name = s"$thematique - $channel", style = '-')
       p.xlabel = "Year"
-      p.ylabel = "Sum Value"
+      p.ylabel = "Average Value"
       p.legend = true
 
       f.refresh()

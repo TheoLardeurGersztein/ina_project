@@ -40,12 +40,16 @@ object WomenRatePerYear {
 
     data.show()
 
+    val channel = "TF1"
 
-    // Calculate the average women expression rate per year
+
     val averageByYear = data
+      .filter(  $"channel_name" === channel) //Comment to have full infos from all channels
       .groupBy("year")
       .agg(avg("women_expression_rate").as("AverageWomenRate"))
       .orderBy("year")
+
+    averageByYear.show()
 
 
     // Convert to Breeze for plotting
@@ -58,7 +62,7 @@ object WomenRatePerYear {
     val f = Figure()
     val p = f.subplot(0)
 
-    p += plot(years.toArray, intWomenRates.toArray, name = "Average Women Expression Rate")
+    p += plot(years.toArray, intWomenRates.toArray, name = s"Average Women Expression Rate $channel")
     p.xlabel = "Year"
     p.ylabel = "Average Women Expression Rate"
     p.legend = true

@@ -38,10 +38,10 @@ object WomenRatePerHour {
 
     data.show()
 
-    val channel = "TF1"
+    val channel = ""
 
     val averageByHourDF = data
-      .filter($"channel_name" === channel) //Comment to have full infos from all channels
+      //.filter($"channel_name" === channel) //Comment to have full infos from all channels
       .groupBy("hour")
       .agg(avg("women_expression_rate").as("AverageWomenRate"))
       .orderBy("hour")
@@ -59,7 +59,7 @@ object WomenRatePerHour {
     val p = f.subplot(0)
 
     // Use scatter for plotting
-    p += plot(hours, intWomenRates, name = s"Average Women Expression Rate - $channel")
+    p += plot(hours, intWomenRates, name = s"AverageWomenExpressionRatePerHour$channel")
     p.xlabel = "Hour"
     p.ylabel = "Average Women Expression Rate"
     p.legend = true

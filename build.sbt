@@ -18,6 +18,10 @@ libraryDependencies ++= Seq(
   "org.scalanlp" %% "breeze-viz" % "1.0"
 )
 
+libraryDependencies += "org.jfree" % "jfreechart" % "1.5.3"
+libraryDependencies += "org.jfree" % "jcommon" % "1.0.23"
+
+
 
 
 
