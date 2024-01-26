@@ -92,12 +92,20 @@ object ThematiqueRatios {
 
     // Define the columns for which you want to calculate ratios
     val columnsToCalculateRatios = List("Sum_TF1", "Sum_France_2", "Sum_France_3", "Sum_Canal+", "Sum_Arte", "Sum_M6", "Sum_Totaux")
+
+
     // Iterate over the columns and calculate ratios in the same column
     val dfWithRatios = columnsToCalculateRatios.foldLeft(sumDF) { (accDF, columnName) =>
       accDF.withColumn(columnName, col(columnName) * 100 / col("Sum_Totaux"))
     }
 
-    dfWithRatios.show()
+
+    // Iterate over the columns and calculate ratios
+    val dfWithColumnRatios = columnsToCalculateRatios.foldLeft(dfWithRatios) { (accDF, columnName) =>
+      val sumColumn = dfWithRatios.agg(sum(columnName)).first().getDouble(0)
+      accDF.withColumn(columnName, col(columnName) * 100 / sumColumn)
+    }
+    dfWithColumnRatios.show()
 
 
     // Perform a query to find rows where "THEMATIQUES" is equal to "Economie"
